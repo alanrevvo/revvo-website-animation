@@ -20,5 +20,5 @@ project_root=${PROJECT_ROOT:-$( dirname $( git rev-parse --git-dir ) )}
 dist_src="$project_root"/dist
 server_src="$project_root"/server
 
-aws s3 sync "$dist_src" s3://animation.revvo.ai
+aws s3 sync "$dist_src" s3://animation.revvo.ai/dist
 aws s3 sync "$server_src" s3://animation.revvo.ai
