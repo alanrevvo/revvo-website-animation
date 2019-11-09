@@ -22,3 +22,4 @@ server_src="$project_root"/server
 
 aws s3 sync "$dist_src" s3://animation.revvo.ai/dist
 aws s3 sync "$server_src" s3://animation.revvo.ai
+aws cloudfront create-invalidation --distribution-id E347WXCG7XMQEG
