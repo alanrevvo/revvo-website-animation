@@ -55,7 +55,7 @@ function textToPixelOffsets(text, fontSize, scaler) {
 	// Write the text
 	var context = tempCanvas.getContext('2d');
 	context.fillStyle    = '#FFFFFF';
-	context.font         = fontSize + 'px solid Palatino';
+	context.font         = fontSize + 'px Montserrat';
 	context.fillText(text, 0, 100);
 
 	// Get the pixel offsets and clear the temp canvas

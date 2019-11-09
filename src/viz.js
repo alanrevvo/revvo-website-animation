@@ -131,7 +131,7 @@ function animate(config) {
 			
 			// Go to the first state
 			goToState(config.states[0]);
-			
+
 			// Register the animation frame requests
 			initAnimationFrameRequests();
 			

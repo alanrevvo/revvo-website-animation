@@ -30,7 +30,7 @@ footer, header, hgroup, menu, nav, section {
 body {
   margin: 0;
   background: #f7f7f7 url("../images/bg_body.png");
-  font-family: "proxima-nova", 'helvetica neue', arial, helvetica, sans-serif;
+  font-family: Montserrat, arial, helvetica, sans-serif;
   line-height: 1.5;
   color: #333; }
 

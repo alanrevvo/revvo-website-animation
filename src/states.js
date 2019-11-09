@@ -4,8 +4,8 @@
  * 
  */
 
-const pixelLoader = require('./util/pixelLoader'),
-	colors = require('./colors');
+const pixelLoader = require('./util/pixelLoader');
+const colors = require('./colors');
 
 /** Useful constants */
 var PI_2 = Math.PI * 2;
@@ -97,6 +97,66 @@ function encircle(animationState, centerX, centerY, radius, rotationSpeed, m) {
 	m.targetY = centerY + radius * sine(angle);
 }
 
+function moveToAndReset(animationState, targetX, targetY, resetX, resetY, resetFlag, m) {
+  var distX = Math.abs(m.x - targetX);
+  var distY = Math.abs(m.y - targetY);
+  var distSquared = distX * distX + distY * distY;
+
+  if (distSquared < 10) {
+    m.x = resetX;
+    m.y = resetY;
+
+    m[resetFlag] = false;
+  } else {
+    m.targetX = targetX;
+    m.targetY = targetY;
+
+    var maxDistSquared = (resetX - targetX) * (resetX - targetX) + (resetY - targetY) * (resetY - targetY);
+    var distance = Math.min(1, 2 * distSquared / maxDistSquared);
+    m.opacity = Math.floor(255 * distance);
+  }
+}
+
+function encircleWithTrailingTread(animationState, centerX, centerY, radius, rotationSpeed, m) {
+  if (!m.isTreadParticle
+    && m.count % 13 == 0
+    && Math.abs(m.vY) < 1
+    && m.vX < 0) {
+    m.isTreadParticle = true;
+  }
+
+  if (m.isTreadParticle) {
+    moveToAndReset(animationState, centerX - 4 * radius, centerY + radius, centerX, centerY + radius, "isTreadParticle", m);
+  } else {
+    encircle(animationState, centerX, centerY, radius, rotationSpeed, m);
+  }
+}
+
+function encircleWithTrailingTreadAndCloud(animationState, centerX, centerY, radius, rotationSpeed, cloudX, cloudY, m) {
+  if (!m.isTreadParticle
+    && m.count % 13 == 0
+    && Math.abs(m.vY) < 1
+    && m.vX < 0) {
+    m.isTreadParticle = true;
+  }
+
+  if (!m.isCloudParticle
+    && m.count % 17 == 0
+    && Math.abs(m.vY) < 1
+    && m.vX > 0) {
+    m.isCloudParticle = true;
+    m.color = [204, 204, 204];
+  }
+
+  if (m.isTreadParticle) {
+    moveToAndReset(animationState, centerX - 4 * radius, centerY + radius, centerX, centerY + radius, "isTreadParticle", m);
+  } else if (m.isCloudParticle) {
+    moveToAndReset(animationState, cloudX, cloudY, centerX, centerY + radius, "isCloudParticle", m);
+  } else {
+    encircle(animationState, centerX, centerY, radius, rotationSpeed, m);
+  }
+}
+
 /**
  * Assign the mover's coordinates for a rotating figure eight with the given center, radius, and rotation speed
  * Note that the radius and rotationSpeed should be inversely proportional.
@@ -109,9 +169,76 @@ function figureEight(animationState, centerX, centerY, radius, rotationSpeed, m,
 	m.targetY = centerY + radius * sine(angle) * cosine(angle);
 }
 
+function clearTreadParticle(animationState) {
+  var i = animationState.movers.length;
+  while (i-- > 0) {
+    var m = animationState.movers[i];
+    m.isTreadParticle = false;
+  }
+}
+
+function clearTreadAndCloudParticle(animationState) {
+  var i = animationState.movers.length;
+  while (i-- > 0) {
+    var m = animationState.movers[i];
+    m.isTreadParticle = false;
+    m.isCloudParticle = false;
+  }
+}
+
+function spinTiresWithCloud(animationState, enableCloud) {
+  friction = 0.9;
+
+  var initialRadius = 40;
+  var radiusFactor = 10;
+  var offsetH = animationState.canvasH / 5;
+  var offsetW = animationState.canvasW / 8;
+
+  var canvasCenterW = Math.floor(animationState.canvasW / 2);
+  var canvasCenterH = Math.floor(animationState.canvasH / 2);
+
+  var i = animationState.movers.length;
+  while (i-- > 0) {
+    var m = animationState.movers[i];
+    var groupType = m.groupType;
+    var innerGroupType = m.innerGroupType;
+    var radius = radiusFactor * (innerGroupType % 4) + initialRadius;
+
+    var maxRadius = initialRadius + initialRadius;
+
+    var circleX = canvasCenterW + ((groupType % 2) * 2 - 1) * (maxRadius + offsetW);
+    var circleY = canvasCenterH + (Math.floor(groupType / 2) * 2 - 1) * (maxRadius + offsetH) / 2;
+
+    var rotationSpeed = Math.floor(innerGroupType / 2) === 0 ? 15 : 21;
+
+    if (enableCloud) {
+      var isCloud = groupType === 1 || groupType === 0;
+      if (isCloud) {
+        figureEight(animationState, canvasCenterW, circleY, radius, 20, m, 1);
+      } else {
+        encircleWithTrailingTreadAndCloud(animationState,
+          circleX, circleY, radius, rotationSpeed,
+          canvasCenterW, canvasCenterH - (maxRadius + offsetH) / 2,
+          m
+        )
+      }
+    } else {
+      encircleWithTrailingTread(animationState, circleX, circleY, radius, rotationSpeed, m);
+    }
+  }
+}
+
+function goSpinTires(animationState) {
+  spinTiresWithCloud(animationState, false);
+}
+
+function goSpinTiresWithCloud(animationState) {
+  spinTiresWithCloud(animationState, true);
+}
+
 function goCollectData(animationState) {
-	var initialRadius = Math.min(animationState.canvasW, animationState.canvasH) / 10,
-		radiusFactor = initialRadius / 4;
+	var initialRadius = Math.min(animationState.canvasW, animationState.canvasH) / 10;
+  var radiusFactor = initialRadius / 4;
 	
 	var canvasCenterW = animationState.canvasW / 2,
 		canvasCenterH = 5 * animationState.canvasH / 8;
@@ -141,13 +268,10 @@ function analyze(animationState, filter) {
 		radiusFactor = 10,
 		offset = animationState.canvasH / 4;
 
-	var canvasCenterW = Math.floor(animationState.canvasW / 2),
-		canvasCenterH = Math.floor(animationState.canvasH / 2);
+	var canvasCenterW = Math.floor(animationState.canvasW / 2);
+  var canvasCenterH = Math.floor(animationState.canvasH / 2);
 
 	var i = animationState.movers.length;
-
-	var count = 0;
-
 	while (i-- > 0) {
 		var m = animationState.movers[i];
 		var groupType = m.groupType;
@@ -157,7 +281,7 @@ function analyze(animationState, filter) {
 		var maxRadius = initialRadius + initialRadius;
 
 		var circleX = canvasCenterW + (groupType - 1.5) * (maxRadius + offset) ;
-		var circleY = animationState.canvasH / 2 + maxRadius;
+		var circleY = canvasCenterH + maxRadius;
 
 		var rotationSpeed = (Math.floor(innerGroupType / 2) === 0 ? -15 : 21) * (Math.floor(groupType / 2) === 0 ? -1 : 1);
 
@@ -168,7 +292,6 @@ function analyze(animationState, filter) {
 			encircle(animationState, circleX, circleY, radius, rotationSpeed, m);
 		}
 	}
-	return false;
 }
 
 // Bar chart represented by the bar heights
@@ -323,7 +446,7 @@ function grapher(animationState, miniCanvasW, miniCanvasH) {
 		
 		// Hide if we're supposed to
 		if (coords.length > 2) {
-			m.hide = coords[2];
+			m.opacity = coords[2] ? 0 : 255;
 		}
 	}
 
@@ -362,6 +485,10 @@ function goDisplayPixels(pixelLoader, asText) {
 		
 		// Overlap each pixel with the same number of movers
 		var maxMovers = pixels.length * Math.floor(animationState.movers.length / pixels.length);
+
+    if (3 * pixels.length > animationState.movers.length) {
+      console.log("Need at least 3 movers to cover each pixel, currently (" + animationState.movers.length + " movers for (" + pixels.length + ") pixels!");
+    }
 		
 		var i = 0;
 		while (i < animationState.movers.length) {	
@@ -477,12 +604,26 @@ function scatter() {
 			);
 }
 
-// Gather into Medallia logo
-function nestedDiamonds() {
+// Gather into a tire
+function singleTire() {
 	return new State(
-				null, goCollectData, null,
+				preSpinTire, goSpinTire, postSpinTire,
  				6000
 			);
+}
+
+function multipleTires() {
+  return new State(
+        clearTreadParticle, goSpinTires, null,
+        8000
+      );
+}
+
+function multipleTiresToCloud() {
+  return new State(
+        null, goSpinTiresWithCloud, clearTreadAndCloudParticle,
+        8000
+      );
 }
 
 // Four spinning circles
@@ -542,7 +683,7 @@ function image(img, onload) {
 	// Display a static image
 	return new State(
 				(animationState) => {
-					animationState.setColors(colors.greenColors);
+					animationState.setColors(colors.whiteColors);
 					goDisplayPixels(imagePixelLoader, false)(animationState);
 				},
 				null,
@@ -569,7 +710,9 @@ function createTransitionMap(states, repeat) {
 
 const examples = {
 	scatter: scatter,
-	nestedDiamonds: nestedDiamonds,
+	singleTire: singleTire,
+  multipleTires: multipleTires,
+  multipleTiresToCloud: multipleTiresToCloud,
 	circles: circles,
 	circlesFigureEight: circlesFigureEight,
 	graphs: graphs,

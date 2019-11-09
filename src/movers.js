@@ -18,25 +18,27 @@ function Mover() {
 
 	// RGB values as an array with values in [0, 255]
 	this.color = colors.colors[this.colorType];
+
+  // 0 to hide, 255 for opaque
+  this.opacity = 255;
 	
 	// Function to reset the original color
 	this.resetColor = function() {
 		this.color = colors.colors[this.colorType];
 	};
 	
-	this.hide = false;
 	this.fixed = false;
 	
-	this.x	 = 0;
-	this.y	 = 0;
-	this.vX	= 0;
-	this.vY	= 0;
-	this.size  = 1;
+	this.x	     = 0;
+	this.y	     = 0;
+	this.vX      = 0;
+	this.vY      = 0;
+	this.size    = 1;
 	this.targetX = 0;
 	this.targetY = 0;
 }
 
-Mover.count = 0;
+Mover.count         = 0;
 Mover.numType1Types = 4;
 Mover.numType2Types = 7;
 

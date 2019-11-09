@@ -2,7 +2,7 @@ var viz = require('./viz');
 var blower = require('./util/blower');
 var $ = require('jquery');
 
-function medallia(domElement, width, height) {
+function display(domElement, width, height) {
   const transitionHighlights = {
     collect: "collect",
     analyze: "analyze",
@@ -24,8 +24,8 @@ function medallia(domElement, width, height) {
 
   $(function() {	
 	const triggerStates = {
-		'collect': viz.examples.nestedDiamonds(),
-		'analyze': viz.examples.circles(),
+		'collect': viz.examples.multipleTires(),
+		'analyze': viz.examples.multipleTiresToCloud(),
 		'display': viz.examples.graphs()
 	}
 	
@@ -44,7 +44,7 @@ function medallia(domElement, width, height) {
 	
 	// Register the image if desired
 	const image = new Image();
-	image.src = "images/sthacktrix.jpg";
+	image.src = "images/revvo_bug_black_75.jpg";
 	image.onload = function() {
 		const animation = viz.animate({
 			domElement: domElement,
@@ -54,9 +54,8 @@ function medallia(domElement, width, height) {
 				viz.examples.scatter(),
 				triggerStates['collect'],
 				triggerStates['analyze'],
-				viz.examples.circlesFigureEight(),
 				triggerStates['display'],
-				viz.examples.staticText("MEDALLIA"),
+				viz.examples.staticText("Revvo"),
 				viz.examples.image(image)
 			],
 			repeat: true,
@@ -91,6 +90,6 @@ function message(domElement, width, height, messageText) {
 }
 
 module.exports = {
-  medallia: medallia,
+  display: display,
   message: message
 };

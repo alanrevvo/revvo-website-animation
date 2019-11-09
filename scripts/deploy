@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This script deploys the website hosted on AWS S3
+
+set -e # Exit immediately if a command exits with a non-zero status.
+set -u # Treat unset variables as an error when substituting.
+
+help_text() {
+    echo "Usage:"
+    echo "  $0"
+    echo "    - builds and deploys to AWS environment"
+    exit 0
+}
+
+if [[ $# -ge 1 ]]; then
+    help_text
+fi
+
+project_root=${PROJECT_ROOT:-$( dirname $( git rev-parse --git-dir ) )}
+dist_src="$project_root"/dist
+server_src="$project_root"/server
+
+aws s3 sync "$dist_src" s3://animation.revvo.ai
+aws s3 sync "$server_src" s3://animation.revvo.ai

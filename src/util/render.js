@@ -121,7 +121,7 @@ function getWebGLRenderer(canvas) {
 				v.uintArr[uintIdx + 0] = m.color[0];
 				v.uintArr[uintIdx + 1] = m.color[1];
 				v.uintArr[uintIdx + 2] = m.color[2];
-				v.uintArr[uintIdx + 3] = m.hide ? 0 : 255;
+				v.uintArr[uintIdx + 3] = m.opacity;
 
 				floatIdx += v.vertexSizeInFloats;
 				uintIdx += v.vertexSizeInBytes;

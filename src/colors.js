@@ -8,12 +8,14 @@ const colors = [];
 // TODO: Clean this up so we obtain the colors from the image and use them instead ...
 const blueColors = ["013459", "0d2a75", "333333", "666666"];
 const greenColors = ["00C957", "008B00", "333333", "666666"];
+const whiteColors = ["666666"];
 
 function setColors(baseColors) {
-	const newColors = createColorDistribution(baseColors, 0, 1);
-	
+  const newColors = createColorDistribution(baseColors, 0, 1);
+
 	// Clear the colors array
 	colors.length = 0;
+
 	// Push all new colors into colors array
 	Array.prototype.push.apply(colors, newColors);
 }
@@ -54,6 +56,7 @@ function generateLumVariation(hex, lum) {
 
 module.exports = {
 	blueColors: blueColors,
+  whiteColors: whiteColors,
 	greenColors: greenColors,
 	createColorDistribution: createColorDistribution,
 	colors: colors,

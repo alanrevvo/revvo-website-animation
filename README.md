@@ -2,7 +2,7 @@
 
 # Animation Flow
 
-This is a demo that used to run on Medallia's engineering website.
+This is a visual explanation of Revvo's tire platform
 
 Click on the dots!
 
@@ -16,3 +16,6 @@ Click on the dots!
 ## Dependencies
 - jquery
 - underscore
+
+## Credits
+- [Animation Flow](https://github.com/wko27/animation-flow)
