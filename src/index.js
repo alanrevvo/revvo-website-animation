@@ -51,12 +51,12 @@ function display(domElement, width, height) {
 			width: width,
 			height: height,
 			states: [
-				// viz.examples.scatter(),
-				// triggerStates['collect'],
-				// triggerStates['analyze'],
+				viz.examples.scatter(),
+				triggerStates['collect'],
+				triggerStates['analyze'],
 				triggerStates['display'],
-				// viz.examples.staticText("Revvo"),
-				// viz.examples.image(image)
+				viz.examples.staticText("Revvo"),
+				viz.examples.image(image)
 			],
 			repeat: true,
 			initCallback: function(goToState) {
