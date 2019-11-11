@@ -1,7 +1,7 @@
 {
   "name": "animation-flow",
   "version": "0.0.2",
-  "description": "Demo of animation flow.",
+  "description": "Revvo Animation.",
   "main": "src/viz.js",
   "scripts": {
     "build": "npm run clean && mkdir -p dist && browserify src/index.js --standalone viz -o dist/main.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:wko27/animation-flow.git"
+    "url": "git@github.com:alanrevvo/revvo-website-animation.git"
   },
   "keywords": [
     "animation",

@@ -413,18 +413,35 @@ function grapher(animationState, miniCanvasW, miniCanvasH) {
 	// Each graph should start with at least two axes
 	var graphs = [
 		[ getXAxis(0), getYAxis(0), line, cubic ],
-		[ getXAxis(miniCanvasH / 2), getYAxis(0), sineWaves(0, 0), sineWaves(Math.PI / 2, 3 * Math.PI / 8)],
+		// [ getXAxis(miniCanvasH / 2), getYAxis(0), sineWaves(0, 0), sineWaves(Math.PI / 2, 3 * Math.PI / 8)],
 		[ getXAxis(0), getYAxis(0), barChartHoriz, barChartVert],
 		[ getXAxis(miniCanvasH / 2), getYAxis(miniCanvasW / 2), circles ]
 	];
 
 	/** Padding for the mini windows */
 	var padding = 20;
+
+  var shiftConstant;
+  switch (graphs.length) {
+    case 4:
+      shiftConstant = -1.75;
+      break;
+    case 3:
+      shiftConstant = -1.5;
+      break;
+    case 2:
+      shiftConstant = -1;
+      break;
+    case 1:
+      shiftConstant = -0.5;
+      break;
+  }
 	
 	var i = animationState.movers.length;
 	while (i-- > 0) {
 		var m = animationState.movers[i];
-		var graph = graphs[m.groupType % graphs.length];
+    var graphIdx = m.groupType % graphs.length;
+		var graph = graphs[graphIdx];
 
 		var series;
 
@@ -441,7 +458,7 @@ function grapher(animationState, miniCanvasW, miniCanvasH) {
 		var coords = series.call(null, m.colorType, m.count);
 
 		// Shift to appropriate region
-		m.targetX = animationState.canvasW / 2 + (m.groupType - 2 + 1/4) * (miniCanvasW * 5/4) + coords[0];
+		m.targetX = animationState.canvasW / 2 + (graphIdx + shiftConstant) * (miniCanvasW * 5/4) + coords[0];
 		m.targetY = animationState.canvasH / 2 + padding + (miniCanvasH - coords[1]);
 		
 		// Hide if we're supposed to

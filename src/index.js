@@ -20,7 +20,7 @@ function display(domElement, width, height) {
     // Fade in the new explanation, and highlight the appropriate control
     $('#' + trigger + '-explanation').animate('opacity',150).fadeIn(500);
     $('#' + trigger + '-control').addClass("viz-control-active");
-  }				
+  }
 
   $(function() {	
 	const triggerStates = {
@@ -51,12 +51,12 @@ function display(domElement, width, height) {
 			width: width,
 			height: height,
 			states: [
-				viz.examples.scatter(),
-				triggerStates['collect'],
-				triggerStates['analyze'],
+				// viz.examples.scatter(),
+				// triggerStates['collect'],
+				// triggerStates['analyze'],
 				triggerStates['display'],
-				viz.examples.staticText("Revvo"),
-				viz.examples.image(image)
+				// viz.examples.staticText("Revvo"),
+				// viz.examples.image(image)
 			],
 			repeat: true,
 			initCallback: function(goToState) {
