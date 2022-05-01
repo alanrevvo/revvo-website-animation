@@ -1,7 +1,7 @@
 {
   "name": "animation-flow",
   "version": "0.0.2",
-  "description": "Revvo Animation.",
+  "description": "Revvo Animation",
   "main": "src/viz.js",
   "scripts": {
     "build": "npm run clean && mkdir -p dist && browserify src/index.js --standalone viz -o dist/main.js",

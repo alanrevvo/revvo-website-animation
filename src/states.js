@@ -25,15 +25,15 @@ var cosine = getCache(Math.cos);
 var sine  = getCache(Math.sin);
 
 function slowDown(animationState) {
-	animationState.friction = 0.9;
+	animationState.friction = animationState.defaultSlowFriction;
 }
 
 function speedUp(animationState) {
-	animationState.friction = 1.0;
+	animationState.friction = animationState.defaultFastFriction;
 }
 
 function explode(animationState) {
-	friction = 1;
+	animationState.friction = 1;
 	var i = animationState.movers.length;
 	while (i-- > 0) {
 		var m = animationState.movers[i];
@@ -187,7 +187,7 @@ function clearTreadAndCloudParticle(animationState) {
 }
 
 function spinTiresWithCloud(animationState, enableCloud) {
-  friction = 0.9;
+  animationState.friction = animationState.defaultSlowFriction;
 
   var initialRadius = 40;
   var radiusFactor = 10;
@@ -262,7 +262,7 @@ function goFilterData(animationState) {
 }
 
 function analyze(animationState, filter) {
-	friction = 0.9;
+	animationState.friction = animationState.defaultSlowFriction;
 
 	var initialRadius = 40,
 		radiusFactor = 10,
@@ -475,7 +475,7 @@ function grapher(animationState, miniCanvasW, miniCanvasH) {
 
 // Display 4 graphs, each in a corner
 function goVisualizeData(animationState) {
-	friction = 0.9;
+	animationState.friction = animationState.defaultSlowFriction;
 
 	// Size of the mini canvases
 	var miniCanvasW = animationState.canvasW / 5;
@@ -655,7 +655,7 @@ function circles() {
 function circlesFigureEight() {
 	return new State(
 				null, goFilterData, null,
-				6000
+				2000
 			);
 }
 		

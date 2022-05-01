@@ -1,5 +1,5 @@
 /**
- * Medallia Engineering Animation
+ * Revvo Engineering Animation
  * Inspired by �2010 spielzeugz.de
  */
 
@@ -54,6 +54,8 @@ const defaultConfig = {
 	scale: 1.0
 };
 
+const DEFAULT_FRICTION = 1.0;
+
 /**
  * @param config
  */
@@ -71,7 +73,9 @@ function animate(config) {
 		/** Function which states can call to transition to the next state */
 		transition: transition,
 		/** Friction coeff */
-		friction: 0.9,
+		defaultFastFriction: DEFAULT_FRICTION,
+		defaultSlowFriction: 0.9,
+		friction: DEFAULT_FRICTION,
 		/** Set new colors */
 		setColors: setColors,
 		/** Set new colors */
@@ -89,6 +93,8 @@ function animate(config) {
 		/** Animation frame request id for updating movers and states */
 		animationFrameRequestId: null,
 	};
+
+		console.log(`Friction set to ${animationState.friction}, default slow ${animationState.defaultSlowFriction}`);
 	
 	config = _.extend(defaultConfig, config);
 	
@@ -107,8 +113,8 @@ function animate(config) {
 
 			canvas.width = config.width;
 			canvas.height = config.height;
-            
-            // Resize the canvas to scale
+						
+						// Resize the canvas to scale
 			animationState.canvasW = canvas.offsetWidth / config.scale;
 			animationState.canvasH = canvas.offsetHeight / config.scale;
 			
